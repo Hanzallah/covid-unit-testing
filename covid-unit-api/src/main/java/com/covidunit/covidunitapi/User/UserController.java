@@ -12,7 +12,7 @@ public class UserController {
     UserRepo userRepo;
 
 
-    @PostMapping("/api/v1/users/register")
+    @PostMapping("/api/v1/user/register")
     public ResponseEntity<?> registerUser(@RequestBody UserModel newUser){
         List<UserModel> users = userRepo.findAll();
 
@@ -33,7 +33,7 @@ public class UserController {
         return new ResponseEntity<UserModel>(newUser, HttpStatus.OK);
     }
 
-    @PostMapping("/api/v1/users/login")
+    @PostMapping("/api/v1/user/login")
     public ResponseEntity<?> userLogin(@RequestBody UserModel user){
         if (user.getEmail() == null || user.getPassword() == null || user.getEmail() == null){
             Map<String,String> map = new HashMap<>();
@@ -55,7 +55,7 @@ public class UserController {
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
-    @PostMapping("/api/v1/users/logout")
+    @PostMapping("/api/v1/user/logout")
     public ResponseEntity<?> logUserOut(@RequestBody UserModel user) {
         if (user.getEmail() == null || user.getPassword() == null || user.getEmail() == null){
             Map<String,String> map = new HashMap<>();
@@ -79,7 +79,7 @@ public class UserController {
     }
 
 
-    @PostMapping("/api/v1/users/reset/password")
+    @PostMapping("/api/v1/user/reset/password")
     public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> userPass) {
         try {
             UserModel user = userRepo.findByEmail(userPass.get("email"));
@@ -119,7 +119,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/api/v1/users/user/id")
+    @GetMapping("/api/v1/user/id")
     public ResponseEntity<?>  getUserID(@RequestBody Map<String, String> userEmail) {
         try {
             UserModel user = userRepo.findByEmail(userEmail.get("email"));
