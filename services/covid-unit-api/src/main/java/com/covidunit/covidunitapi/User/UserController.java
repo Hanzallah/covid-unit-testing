@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -12,8 +11,9 @@ public class UserController {
     @Autowired
     UserRepo userRepo;
 
+
     @PostMapping("/api/v1/users/register")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody UserModel newUser){
+    public ResponseEntity<?> registerUser(@RequestBody UserModel newUser){
         List<UserModel> users = userRepo.findAll();
 
         if (newUser.getEmail() == null || newUser.getPassword() == null || newUser.getEmail() == null){
@@ -34,7 +34,7 @@ public class UserController {
     }
 
     @PostMapping("/api/v1/users/login")
-    public ResponseEntity<?> userLogin(@Valid @RequestBody UserModel user){
+    public ResponseEntity<?> userLogin(@RequestBody UserModel user){
         if (user.getEmail() == null || user.getPassword() == null || user.getEmail() == null){
             Map<String,String> map = new HashMap<>();
             map.put("error", "Fields cannot be null!");
@@ -56,7 +56,7 @@ public class UserController {
     }
 
     @PostMapping("/api/v1/users/logout")
-    public ResponseEntity<?> logUserOut(@Valid @RequestBody UserModel user) {
+    public ResponseEntity<?> logUserOut(@RequestBody UserModel user) {
         if (user.getEmail() == null || user.getPassword() == null || user.getEmail() == null){
             Map<String,String> map = new HashMap<>();
             map.put("error", "Fields cannot be null!");
@@ -79,11 +79,11 @@ public class UserController {
     }
 
 
-    @PostMapping("/api/v1/users/reset/password/{id}")
-    public ResponseEntity<?> logUserOut(@PathVariable long id, @Valid @RequestBody Map<String, String> password) {
+    @PostMapping("/api/v1/users/reset/password")
+    public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> userPass) {
         try {
-            UserModel user = userRepo.findById(id).get();
-            String val = password.get("password");
+            UserModel user = userRepo.findByEmail(userPass.get("email"));
+            String val = userPass.get("password");
             user.setPassword(val);
             userRepo.save(user);
             return new ResponseEntity<>(user, HttpStatus.OK);

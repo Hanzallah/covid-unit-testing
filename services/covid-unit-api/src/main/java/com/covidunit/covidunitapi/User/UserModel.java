@@ -1,24 +1,18 @@
 package com.covidunit.covidunitapi.User;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 @Table(name = "users")
 public class UserModel {
     private @Id @GeneratedValue long id;
-    private @NotBlank @NotNull String name;
-    private @NotBlank @NotNull String email;
-    private @NotBlank @NotNull String password;
-    private @NotBlank boolean loggedIn;
+    private @Column(name = "name", nullable=false, length=20) String name;
+    private @Column(name = "email", nullable=false, length=50,  unique = true) String email;
+    private @Column(name = "password", nullable=false) String password;
+    private @Column(name = "loggedIn") boolean loggedIn;
 
     public UserModel(){}
-    public UserModel(@NotBlank @NotNull String name, @NotBlank @NotNull String email,
-                @NotBlank @NotNull String password) {
+    public UserModel(String name, String email, String password) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -33,8 +27,8 @@ public class UserModel {
         return name;
     }
 
-    public void setName(String username) {
-        this.name = username;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPassword() {
@@ -66,8 +60,7 @@ public class UserModel {
         if (this == o) return true;
         if (!(o instanceof UserModel)) return false;
         UserModel user = (UserModel) o;
-        return Objects.equals(name, user.name) && Objects.equals(email, user.email)
-                && Objects.equals(password, user.password);
+        return Objects.equals(email, user.email);
     }
 
     @Override
