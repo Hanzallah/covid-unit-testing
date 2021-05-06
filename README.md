@@ -8,4 +8,5 @@
 --> Open the folder in IntelliJ<br />
 --> Import the maven dependencies using the pom.xml folder<br/>
 --> Enter your MYSQL username and password to the application.properties file<br/>
+--> DO NOT PUSH YOUR application.properties FILE TO GITHUB<br/>
 --> Run the proram which will start on port 8080<br/>
