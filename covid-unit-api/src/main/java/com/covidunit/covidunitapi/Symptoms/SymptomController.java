@@ -40,7 +40,7 @@ public class SymptomController {
 
             int symptomCount = 0;
             if (symptomModel.getFever() > 100) { symptomCount++; }
-            if (symptomModel.getDifficultBreathing()) {symptomCount++; }
+            if (symptomModel.getDifficultyBreathing()) {symptomCount++; }
             if (symptomModel.getCough()) {symptomCount++; }
             if (symptomModel.getTiredness()) { symptomCount++; }
 

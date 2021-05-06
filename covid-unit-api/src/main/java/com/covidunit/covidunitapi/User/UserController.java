@@ -21,9 +21,16 @@ public class UserController {
     public ResponseEntity<?> registerUser(@RequestBody UserModel requestNewUser){
         List<UserModel> users = userRepo.findAll();
 
-        if (requestNewUser.getEmail() == null || requestNewUser.getPassword() == null || requestNewUser.getEmail() == null){
+        if (requestNewUser.getEmail() == null || requestNewUser.getPassword() == null || requestNewUser.getName() == null){
             Map<String,String> map = new HashMap<>();
             map.put("message", "Fields cannot be null!");
+            return new ResponseEntity<>(map, HttpStatus.OK);
+        }
+
+        if (requestNewUser.getGender() != null && requestNewUser.getGender().equals("F")
+                && requestNewUser.getGender().equals("M")){
+            Map<String,String> map = new HashMap<>();
+            map.put("message", "Incorrect gender format!");
             return new ResponseEntity<>(map, HttpStatus.OK);
         }
 

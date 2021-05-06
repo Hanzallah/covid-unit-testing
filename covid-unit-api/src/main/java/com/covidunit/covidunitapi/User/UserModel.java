@@ -11,6 +11,10 @@ import java.util.List;
 public class UserModel {
     private @Id @GeneratedValue(strategy= GenerationType.IDENTITY) long id;
     private @Column(name = "name", nullable=false, length=20) String name;
+    private @Column(name = "age") Integer age;
+    private @Column(name = "gender", length=1) String gender;
+    private @Column(name = "city", length=20) String city;
+    private @Column(name = "country", length=20) String country;
     private @Column(name = "email", nullable=false, length=50,  unique = true) String email;
     private @Column(name = "password", nullable=false) String password;
     private @Column(name = "loggedIn") boolean loggedIn;
@@ -100,5 +104,37 @@ public class UserModel {
             newSymptoms.setCreator(this);
             symptoms.add(newSymptoms);
         }
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 }

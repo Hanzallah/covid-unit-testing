@@ -18,8 +18,8 @@ public class SymptomModel {
     private Boolean cough;
     @Column(name = "tiredness", nullable = false)
     private Boolean tiredness;
-    @Column(name = "difficultBreathing", nullable = false)
-    private Boolean difficultBreathing;
+    @Column(name = "difficultyBreathing", nullable = false)
+    private Boolean difficultyBreathing;
     @Column(name = "numSymptoms", nullable = false)
     private Integer numSymptoms;
 
@@ -49,7 +49,7 @@ public class SymptomModel {
                 ", fever=" + fever +
                 ", cough=" + cough +
                 ", tiredness=" + tiredness +
-                ", difficultBreathing=" + difficultBreathing +
+                ", difficultyBreathing=" + difficultyBreathing +
                 '}';
     }
 
@@ -77,12 +77,12 @@ public class SymptomModel {
         this.tiredness = tiredness;
     }
 
-    public Boolean getDifficultBreathing() {
-        return difficultBreathing;
+    public Boolean getDifficultyBreathing() {
+        return difficultyBreathing;
     }
 
-    public void setDifficultBreathing(Boolean difficultBreathing) {
-        this.difficultBreathing = difficultBreathing;
+    public void setDifficultyBreathing(Boolean difficultyBreathing) {
+        this.difficultyBreathing = difficultyBreathing;
     }
 
     public Integer getNumSymptoms() {
