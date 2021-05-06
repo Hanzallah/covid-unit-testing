@@ -87,22 +87,49 @@ public class UserController {
             user.setPassword(val);
             userRepo.save(user);
             return new ResponseEntity<>(user, HttpStatus.OK);
-        } catch (NoSuchElementException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            Map<String,String> map = new HashMap<>();
+            map.put("error", e.toString());
+            return new ResponseEntity<>(map, HttpStatus.OK);
         }
-
     }
 
     @DeleteMapping("/api/v1/users/all")
     public ResponseEntity<?> deleteUsers() {
-        userRepo.deleteAll();
-        Map<String,String> map = new HashMap<>();
-        map.put("message", "All deleted!");
-        return new ResponseEntity<>(map, HttpStatus.OK);
+        try {
+            userRepo.deleteAll();
+            Map<String, String> map = new HashMap<>();
+            map.put("message", "All deleted!");
+            return new ResponseEntity<>(map, HttpStatus.OK);
+        } catch (Exception e){
+            Map<String,String> map = new HashMap<>();
+            map.put("error", e.toString());
+            return new ResponseEntity<>(map, HttpStatus.OK);
+        }
     }
 
     @GetMapping("/api/v1/users/all")
-    public List<UserModel> getAllUsers() {
-        return userRepo.findAll();
+    public ResponseEntity<?> getAllUsers() {
+        try {
+            return new ResponseEntity<>(userRepo.findAll(), HttpStatus.OK);
+        } catch (Exception e){
+            Map<String,String> map = new HashMap<>();
+            map.put("error", e.toString());
+            return new ResponseEntity<>(map, HttpStatus.OK);
+        }
+    }
+
+    @GetMapping("/api/v1/users/user/id")
+    public ResponseEntity<?>  getUserID(@RequestBody Map<String, String> userEmail) {
+        try {
+            UserModel user = userRepo.findByEmail(userEmail.get("email"));
+            Map<String,Long> map = new HashMap<>();
+            map.put("id", user.getId());
+            return new ResponseEntity<>(map, HttpStatus.OK);
+        } catch (Exception e) {
+            Map<String,String> map = new HashMap<>();
+            map.put("error", e.toString());
+            return new ResponseEntity<>(map, HttpStatus.OK);
+        }
     }
 }

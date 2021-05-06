@@ -1,15 +1,23 @@
 package com.covidunit.covidunitapi.User;
+import com.covidunit.covidunitapi.Symptoms.SymptomModel;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Objects;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
 public class UserModel {
-    private @Id @GeneratedValue long id;
+    private @Id @GeneratedValue(strategy= GenerationType.IDENTITY) long id;
     private @Column(name = "name", nullable=false, length=20) String name;
     private @Column(name = "email", nullable=false, length=50,  unique = true) String email;
     private @Column(name = "password", nullable=false) String password;
     private @Column(name = "loggedIn") boolean loggedIn;
+
+    @OneToMany(mappedBy = "creator", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<SymptomModel> symptoms;
 
     public UserModel(){}
     public UserModel(String name, String email, String password) {
@@ -70,8 +78,27 @@ public class UserModel {
 
     @Override
     public String toString() {
+        String symList = "";
+        for (SymptomModel symModel: symptoms){
+            symList += symModel.toString();
+            symList += ' ';
+        }
         return "User{" + "id=" + id + ", name='" + name + '\'' + ", email='" + email + '\'' + ", password='" + password + '\'' +
-                ", loggedIn=" + loggedIn + '}';
+                ", loggedIn=" + loggedIn + '}' + ' ' + symList;
     }
 
+    public List<SymptomModel> getSymptoms() {
+        return symptoms;
+    }
+
+    public void setSymptoms(List<SymptomModel> symptoms) {
+        this.symptoms = symptoms;
+    }
+
+    public void addSymptoms(SymptomModel newSymptoms) {
+        if (newSymptoms != null) {
+            newSymptoms.setCreator(this);
+            symptoms.add(newSymptoms);
+        }
+    }
 }
