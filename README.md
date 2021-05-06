@@ -12,4 +12,4 @@
 --> Open MySQL shell and first execute `\sql`<br/>
 --> Connect to MYSQL using `\connect {username}@localhost:3306`<br />
 --> Execute `CREATE DATABASE users;` in the shell<br />
---> Run the proram which will start on port 8080<br/>
+--> Switch back to IntelliJ and run the program which will start on port 8080<br/>
