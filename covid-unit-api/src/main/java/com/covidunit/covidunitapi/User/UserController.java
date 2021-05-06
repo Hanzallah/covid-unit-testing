@@ -1,9 +1,11 @@
 package com.covidunit.covidunitapi.User;
+
 import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.mindrot.jbcrypt.BCrypt;
 import java.util.List;
 
 @RestController
@@ -11,85 +13,109 @@ public class UserController {
     @Autowired
     UserRepo userRepo;
 
+    private String hashPassword(String plainTextPassword){
+        return BCrypt.hashpw(plainTextPassword, BCrypt.gensalt());
+    }
 
     @PostMapping("/api/v1/user/register")
-    public ResponseEntity<?> registerUser(@RequestBody UserModel newUser){
+    public ResponseEntity<?> registerUser(@RequestBody UserModel requestNewUser){
         List<UserModel> users = userRepo.findAll();
 
-        if (newUser.getEmail() == null || newUser.getPassword() == null || newUser.getEmail() == null){
+        if (requestNewUser.getEmail() == null || requestNewUser.getPassword() == null || requestNewUser.getEmail() == null){
             Map<String,String> map = new HashMap<>();
-            map.put("error", "Fields cannot be null!");
+            map.put("message", "Fields cannot be null!");
             return new ResponseEntity<>(map, HttpStatus.OK);
         }
 
         for (UserModel user: users){
-            if (user.equals(newUser)){
+            if (user.equals(requestNewUser)){
                 Map<String,String> map = new HashMap<>();
-                map.put("error", "User already exists!");
+                map.put("message", "User already exists!");
                 return new ResponseEntity<>(map, HttpStatus.OK);
             }
         }
-        userRepo.save(newUser);
-        return new ResponseEntity<UserModel>(newUser, HttpStatus.OK);
+
+        requestNewUser.setPassword(hashPassword(requestNewUser.getPassword()));
+        userRepo.save(requestNewUser);
+
+        Map<String,String> map = new HashMap<>();
+        map.put("message", "User saved successfully");
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
     @PostMapping("/api/v1/user/login")
-    public ResponseEntity<?> userLogin(@RequestBody UserModel user){
-        if (user.getEmail() == null || user.getPassword() == null || user.getEmail() == null){
-            Map<String,String> map = new HashMap<>();
-            map.put("error", "Fields cannot be null!");
+    public ResponseEntity<?> userLogin(@RequestBody UserModel requestUser){
+        if (requestUser.getEmail() == null || requestUser.getPassword() == null || requestUser.getEmail() == null) {
+            Map<String, String> map = new HashMap<>();
+            map.put("message", "Fields cannot be null!");
             return new ResponseEntity<>(map, HttpStatus.OK);
         }
 
         List<UserModel> users = userRepo.findAll();
 
         for (UserModel other: users){
-            if (other.equals(user)){
-                other.setLoggedIn(true);
-                userRepo.save(other);
-                return new ResponseEntity<>(other, HttpStatus.OK);
+            if (other.equals(requestUser)){
+                if (BCrypt.checkpw(requestUser.getPassword(), other.getPassword())){
+                    other.setLoggedIn(true);
+                    userRepo.save(other);
+
+                    Map<String,String> map = new HashMap<>();
+                    map.put("message", "User logged in successfully");
+                    return new ResponseEntity<>(map, HttpStatus.OK);
+                }
+                else{
+                    Map<String,String> map = new HashMap<>();
+                    map.put("message", "Incorrect Password!");
+                    return new ResponseEntity<>(map, HttpStatus.OK);
+                }
             }
         }
+
         Map<String,String> map = new HashMap<>();
-        map.put("error", "User does not exist!");
+        map.put("message", "User does not exist!");
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
     @PostMapping("/api/v1/user/logout")
-    public ResponseEntity<?> logUserOut(@RequestBody UserModel user) {
-        if (user.getEmail() == null || user.getPassword() == null || user.getEmail() == null){
+    public ResponseEntity<?> logUserOut(@RequestBody UserModel requestUser) {
+        if (requestUser.getEmail() == null || requestUser.getPassword() == null || requestUser.getEmail() == null){
             Map<String,String> map = new HashMap<>();
-            map.put("error", "Fields cannot be null!");
+            map.put("message", "Fields cannot be null!");
             return new ResponseEntity<>(map, HttpStatus.OK);
         }
 
         List<UserModel> users = userRepo.findAll();
 
         for (UserModel other : users) {
-            if (other.equals(user)) {
+            if (other.equals(requestUser)) {
                 other.setLoggedIn(false);
                 userRepo.save(other);
-                return new ResponseEntity<>(other, HttpStatus.OK);
+
+                Map<String,String> map = new HashMap<>();
+                map.put("message", "User logged out successfully");
+                return new ResponseEntity<>(map, HttpStatus.OK);
             }
         }
 
         Map<String,String> map = new HashMap<>();
-        map.put("error", "User does not exist!");
+        map.put("message", "User does not exist!");
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
 
     @PostMapping("/api/v1/user/reset/password")
-    public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> userPass) {
+    public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> requestUserPass) {
         try {
-            UserModel user = userRepo.findByEmail(userPass.get("email"));
-            String val = userPass.get("password");
-            user.setPassword(val);
+            UserModel user = userRepo.findByEmail(requestUserPass.get("email"));
+            user.setPassword(hashPassword(requestUserPass.get("password")));
             userRepo.save(user);
-            return new ResponseEntity<>(user, HttpStatus.OK);
+
+            Map<String,String> map = new HashMap<>();
+            map.put("message", "Password updated successfully");
+            return new ResponseEntity<>(map, HttpStatus.OK);
         } catch (Exception e) {
             Map<String,String> map = new HashMap<>();
-            map.put("error", e.toString());
+            map.put("message", e.toString());
             return new ResponseEntity<>(map, HttpStatus.OK);
         }
     }
@@ -103,7 +129,7 @@ public class UserController {
             return new ResponseEntity<>(map, HttpStatus.OK);
         } catch (Exception e){
             Map<String,String> map = new HashMap<>();
-            map.put("error", e.toString());
+            map.put("message", e.toString());
             return new ResponseEntity<>(map, HttpStatus.OK);
         }
     }
@@ -111,24 +137,26 @@ public class UserController {
     @GetMapping("/api/v1/users/all")
     public ResponseEntity<?> getAllUsers() {
         try {
-            return new ResponseEntity<>(userRepo.findAll(), HttpStatus.OK);
+            Map<String,List<UserModel>> map = new HashMap<>();
+            map.put("users", userRepo.findAll());
+            return new ResponseEntity<>(map, HttpStatus.OK);
         } catch (Exception e){
             Map<String,String> map = new HashMap<>();
-            map.put("error", e.toString());
+            map.put("message", e.toString());
             return new ResponseEntity<>(map, HttpStatus.OK);
         }
     }
 
     @GetMapping("/api/v1/user/id")
-    public ResponseEntity<?>  getUserID(@RequestBody Map<String, String> userEmail) {
+    public ResponseEntity<?>  getUserID(@RequestBody Map<String, String> requestUserEmail) {
         try {
-            UserModel user = userRepo.findByEmail(userEmail.get("email"));
+            UserModel user = userRepo.findByEmail(requestUserEmail.get("email"));
             Map<String,Long> map = new HashMap<>();
             map.put("id", user.getId());
             return new ResponseEntity<>(map, HttpStatus.OK);
         } catch (Exception e) {
             Map<String,String> map = new HashMap<>();
-            map.put("error", e.toString());
+            map.put("message", e.toString());
             return new ResponseEntity<>(map, HttpStatus.OK);
         }
     }

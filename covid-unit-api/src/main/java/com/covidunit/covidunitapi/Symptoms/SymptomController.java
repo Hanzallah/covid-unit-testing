@@ -22,18 +22,18 @@ public class SymptomController {
     private ModelMapper mapper = new ModelMapper();
 
     @PostMapping("/api/v1/symptoms/create/{id}")
-    public ResponseEntity<?> createSymptoms(@PathVariable(value="id") long id, @RequestBody SymptomModel newSymptoms){
+    public ResponseEntity<?> createSymptoms(@PathVariable(value="id") long id, @RequestBody SymptomModel requestNewSymptoms){
         try{
             UserModel user = userRepo.findById(id).get();
 
-            SymptomModel symptomModel = mapper.map(newSymptoms, SymptomModel.class);
+            SymptomModel symptomModel = mapper.map(requestNewSymptoms, SymptomModel.class);
 
             List<SymptomModel> allSymptoms = symptomRepo.findAllByCreator(user);
 
             for (SymptomModel curSymptom: allSymptoms){
                 if (curSymptom.didUploadToday()){
                     Map<String,String> map = new HashMap<>();
-                    map.put("error", "Symptom for today already exists!");
+                    map.put("message", "Symptom for today already exists!");
                     return new ResponseEntity<>(map, HttpStatus.OK);
                 }
             }
@@ -47,10 +47,13 @@ public class SymptomController {
             symptomModel.setNumSymptoms(symptomCount);
             user.addSymptoms(symptomModel);
             userRepo.save(user);
-            return new ResponseEntity<>(user, HttpStatus.OK);
+
+            Map<String,String> map = new HashMap<>();
+            map.put("message", "Symptom snapshot created successfully!");
+            return new ResponseEntity<>(map, HttpStatus.OK);
         } catch (Exception e){
             Map<String,String> map = new HashMap<>();
-            map.put("error", e.toString());
+            map.put("message", e.toString());
             return new ResponseEntity<>(map, HttpStatus.OK);
         }
     }
@@ -59,11 +62,12 @@ public class SymptomController {
     public ResponseEntity<?> getSymptoms(@PathVariable(value="id") long id){
         try{
             UserModel user = userRepo.findById(id).get();
-            List<SymptomModel> entityTracks = symptomRepo.findAllByCreator(user);
-            return new ResponseEntity<>(entityTracks, HttpStatus.OK);
+            List<SymptomModel> snapshot = symptomRepo.findAllByCreator(user);
+
+            return new ResponseEntity<>(snapshot, HttpStatus.OK);
         } catch (Exception e){
             Map<String,String> map = new HashMap<>();
-            map.put("error", e.toString());
+            map.put("message", e.toString());
             return new ResponseEntity<>(map, HttpStatus.OK);
         }
     }
@@ -77,7 +81,7 @@ public class SymptomController {
             return new ResponseEntity<>(map, HttpStatus.OK);
         } catch (Exception e){
             Map<String,String> map = new HashMap<>();
-            map.put("error", e.toString());
+            map.put("message", e.toString());
             return new ResponseEntity<>(map, HttpStatus.OK);
         }
     }
