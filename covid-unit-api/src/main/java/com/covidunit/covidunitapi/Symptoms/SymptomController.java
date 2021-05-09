@@ -12,7 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin(origins = "http://localhost:8080", allowedHeaders="*")
+@CrossOrigin
+@RequestMapping("/api/v1/symptoms")
 @RestController
 public class SymptomController {
     @Autowired
@@ -22,7 +23,7 @@ public class SymptomController {
 
     private ModelMapper mapper = new ModelMapper();
 
-    @PostMapping("/api/v1/symptoms/create/{id}")
+    @PostMapping("/create/{id}")
     public ResponseEntity<?> createSymptoms(@PathVariable(value="id") long id, @RequestBody SymptomModel requestNewSymptoms){
         try{
             UserModel user = userRepo.findById(id).get();
@@ -59,7 +60,7 @@ public class SymptomController {
         }
     }
 
-    @GetMapping("/api/v1/symptoms/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getSymptoms(@PathVariable(value="id") long id){
         try{
             UserModel user = userRepo.findById(id).get();
@@ -73,7 +74,7 @@ public class SymptomController {
         }
     }
 
-    @DeleteMapping("/api/v1/symptoms")
+    @DeleteMapping("")
     public ResponseEntity<?> deleteSymptoms(){
         try {
             symptomRepo.deleteAll();

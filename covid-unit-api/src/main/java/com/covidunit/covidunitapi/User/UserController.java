@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import org.mindrot.jbcrypt.BCrypt;
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:8080", allowedHeaders="*")
+@CrossOrigin
+@RequestMapping("/api/v1/user")
 @RestController
 public class UserController {
     @Autowired
@@ -18,7 +19,7 @@ public class UserController {
         return BCrypt.hashpw(plainTextPassword, BCrypt.gensalt());
     }
 
-    @PostMapping("/api/v1/user/register")
+    @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody UserModel requestNewUser){
         List<UserModel> users = userRepo.findAll();
 
@@ -51,9 +52,9 @@ public class UserController {
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
-    @PostMapping("/api/v1/user/login")
+    @PostMapping("/login")
     public ResponseEntity<?> userLogin(@RequestBody UserModel requestUser){
-        if (requestUser.getEmail() == null || requestUser.getPassword() == null || requestUser.getEmail() == null) {
+        if (requestUser.getEmail() == null || requestUser.getPassword() == null || requestUser.getName() == null) {
             Map<String, String> map = new HashMap<>();
             map.put("message", "Fields cannot be null!");
             return new ResponseEntity<>(map, HttpStatus.OK);
@@ -84,9 +85,9 @@ public class UserController {
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
-    @PostMapping("/api/v1/user/logout")
+    @PostMapping("/logout")
     public ResponseEntity<?> logUserOut(@RequestBody UserModel requestUser) {
-        if (requestUser.getEmail() == null || requestUser.getPassword() == null || requestUser.getEmail() == null){
+        if (requestUser.getEmail() == null || requestUser.getPassword() == null || requestUser.getName() == null){
             Map<String,String> map = new HashMap<>();
             map.put("message", "Fields cannot be null!");
             return new ResponseEntity<>(map, HttpStatus.OK);
@@ -111,7 +112,7 @@ public class UserController {
     }
 
 
-    @PostMapping("/api/v1/user/reset/password")
+    @PostMapping("/reset/password")
     public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> requestUserPass) {
         try {
             UserModel user = userRepo.findByEmail(requestUserPass.get("email"));
@@ -128,7 +129,7 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("/api/v1/users/all")
+    @DeleteMapping("/all")
     public ResponseEntity<?> deleteUsers() {
         try {
             userRepo.deleteAll();
@@ -142,7 +143,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/api/v1/users/all")
+    @GetMapping("/all")
     public ResponseEntity<?> getAllUsers() {
         try {
             Map<String,List<UserModel>> map = new HashMap<>();

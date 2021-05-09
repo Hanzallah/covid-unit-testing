@@ -10,7 +10,7 @@ import java.util.List;
 @Table(name = "users")
 public class UserModel {
     private @Id @GeneratedValue(strategy= GenerationType.IDENTITY) long id;
-    private @Column(name = "name", nullable=false, length=20) String name;
+    private @Column(name = "name", nullable=false, length=50) String name;
     private @Column(name = "age") Integer age;
     private @Column(name = "gender", length=1) String gender;
     private @Column(name = "city", length=20) String city;
