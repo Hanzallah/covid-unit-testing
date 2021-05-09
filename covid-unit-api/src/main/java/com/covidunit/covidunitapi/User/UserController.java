@@ -25,6 +25,7 @@ public class UserController {
 
         if (requestNewUser.getEmail() == null || requestNewUser.getPassword() == null || requestNewUser.getName() == null){
             Map<String,String> map = new HashMap<>();
+            map.put("code", "0");
             map.put("message", "Fields cannot be null!");
             return new ResponseEntity<>(map, HttpStatus.OK);
         }
@@ -32,6 +33,7 @@ public class UserController {
         if (requestNewUser.getGender() != null && requestNewUser.getGender().equals("F")
                 && requestNewUser.getGender().equals("M")){
             Map<String,String> map = new HashMap<>();
+            map.put("code", "0");
             map.put("message", "Incorrect gender format!");
             return new ResponseEntity<>(map, HttpStatus.OK);
         }
@@ -39,6 +41,7 @@ public class UserController {
         for (UserModel user: users){
             if (user.equals(requestNewUser)){
                 Map<String,String> map = new HashMap<>();
+                map.put("code", "0");
                 map.put("message", "User already exists!");
                 return new ResponseEntity<>(map, HttpStatus.OK);
             }
@@ -48,7 +51,9 @@ public class UserController {
         userRepo.save(requestNewUser);
 
         Map<String,String> map = new HashMap<>();
+        map.put("code", "1");
         map.put("message", "User saved successfully");
+        map.put("payload", requestNewUser.toString());
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
@@ -56,6 +61,7 @@ public class UserController {
     public ResponseEntity<?> userLogin(@RequestBody UserModel requestUser){
         if (requestUser.getEmail() == null || requestUser.getPassword() == null || requestUser.getName() == null) {
             Map<String, String> map = new HashMap<>();
+            map.put("code", "0");
             map.put("message", "Fields cannot be null!");
             return new ResponseEntity<>(map, HttpStatus.OK);
         }
@@ -67,13 +73,15 @@ public class UserController {
                 if (BCrypt.checkpw(requestUser.getPassword(), other.getPassword())){
                     other.setLoggedIn(true);
                     userRepo.save(other);
-
                     Map<String,String> map = new HashMap<>();
-                    map.put("message", "User logged in successfully");
+                    map.put("message", "User logged in successfully!");
+                    map.put("code", "0");
+                    map.put("payload", other.toString());
                     return new ResponseEntity<>(map, HttpStatus.OK);
                 }
                 else{
                     Map<String,String> map = new HashMap<>();
+                    map.put("code", "0");
                     map.put("message", "Incorrect Password!");
                     return new ResponseEntity<>(map, HttpStatus.OK);
                 }
@@ -81,6 +89,7 @@ public class UserController {
         }
 
         Map<String,String> map = new HashMap<>();
+        map.put("code", "0");
         map.put("message", "User does not exist!");
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
@@ -89,6 +98,7 @@ public class UserController {
     public ResponseEntity<?> logUserOut(@RequestBody UserModel requestUser) {
         if (requestUser.getEmail() == null || requestUser.getPassword() == null || requestUser.getName() == null){
             Map<String,String> map = new HashMap<>();
+            map.put("code", "0");
             map.put("message", "Fields cannot be null!");
             return new ResponseEntity<>(map, HttpStatus.OK);
         }
@@ -101,12 +111,14 @@ public class UserController {
                 userRepo.save(other);
 
                 Map<String,String> map = new HashMap<>();
+                map.put("code", "1");
                 map.put("message", "User logged out successfully");
                 return new ResponseEntity<>(map, HttpStatus.OK);
             }
         }
 
         Map<String,String> map = new HashMap<>();
+        map.put("code", "0");
         map.put("message", "User does not exist!");
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
@@ -120,10 +132,12 @@ public class UserController {
             userRepo.save(user);
 
             Map<String,String> map = new HashMap<>();
+            map.put("code", "1");
             map.put("message", "Password updated successfully");
             return new ResponseEntity<>(map, HttpStatus.OK);
         } catch (Exception e) {
             Map<String,String> map = new HashMap<>();
+            map.put("code", "0");
             map.put("message", e.toString());
             return new ResponseEntity<>(map, HttpStatus.OK);
         }
@@ -134,10 +148,12 @@ public class UserController {
         try {
             userRepo.deleteAll();
             Map<String, String> map = new HashMap<>();
+            map.put("code", "1");
             map.put("message", "All deleted!");
             return new ResponseEntity<>(map, HttpStatus.OK);
         } catch (Exception e){
             Map<String,String> map = new HashMap<>();
+            map.put("code", "0");
             map.put("message", e.toString());
             return new ResponseEntity<>(map, HttpStatus.OK);
         }
@@ -146,12 +162,15 @@ public class UserController {
     @GetMapping("/all")
     public ResponseEntity<?> getAllUsers() {
         try {
-            Map<String,List<UserModel>> map = new HashMap<>();
-            map.put("users", userRepo.findAll());
+            Map<String,String> map = new HashMap<>();
+            map.put("users", userRepo.findAll().toString());
+            map.put("message", "All users retrieved!");
+            map.put("code", "1");
             return new ResponseEntity<>(map, HttpStatus.OK);
         } catch (Exception e){
             Map<String,String> map = new HashMap<>();
             map.put("message", e.toString());
+            map.put("code", "0");
             return new ResponseEntity<>(map, HttpStatus.OK);
         }
     }
@@ -160,12 +179,15 @@ public class UserController {
     public ResponseEntity<?>  getUserID(@RequestBody Map<String, String> requestUserEmail) {
         try {
             UserModel user = userRepo.findByEmail(requestUserEmail.get("email"));
-            Map<String,Long> map = new HashMap<>();
-            map.put("id", user.getId());
+            Map<String,String> map = new HashMap<>();
+            map.put("id", String.valueOf(user.getId()));
+            map.put("code", "1");
+            map.put("message", "Id retrieved!");
             return new ResponseEntity<>(map, HttpStatus.OK);
         } catch (Exception e) {
             Map<String,String> map = new HashMap<>();
             map.put("message", e.toString());
+            map.put("code", "0");
             return new ResponseEntity<>(map, HttpStatus.OK);
         }
     }
