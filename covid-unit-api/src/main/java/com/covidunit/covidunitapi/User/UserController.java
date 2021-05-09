@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.mindrot.jbcrypt.BCrypt;
 import java.util.List;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(origins = "http://localhost:8080")
 @RestController
 public class UserController {
     @Autowired
