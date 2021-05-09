@@ -87,7 +87,9 @@ public class UserModel {
             symList += symModel.toString();
             symList += ' ';
         }
-        return "User{" + "id=" + id + ", name='" + name + '\'' + ", email='" + email + '\'' + ", password='" + password + '\'' +
+        return "User{" + "id=" + id + ", name='" + name + '\'' + ", email='" + email + '\'' + ", password='" + password +
+                '\'' + ", age='" + age + '\'' + ", gender='" + gender + '\'' + ", city='" + city +
+                '\'' + ", country='" + country + '\'' +
                 ", loggedIn=" + loggedIn + '}' + ' ' + symList;
     }
 

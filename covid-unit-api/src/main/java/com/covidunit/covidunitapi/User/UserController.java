@@ -75,7 +75,7 @@ public class UserController {
                     userRepo.save(other);
                     Map<String,String> map = new HashMap<>();
                     map.put("message", "User logged in successfully!");
-                    map.put("code", "0");
+                    map.put("code", "1");
                     map.put("payload", other.toString());
                     return new ResponseEntity<>(map, HttpStatus.OK);
                 }
