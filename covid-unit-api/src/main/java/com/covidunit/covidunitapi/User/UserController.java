@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.mindrot.jbcrypt.BCrypt;
 import java.util.List;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class UserController {
     @Autowired
