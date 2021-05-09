@@ -36,6 +36,7 @@ public class SymptomController {
                 if (curSymptom.didUploadToday()){
                     Map<String,String> map = new HashMap<>();
                     map.put("message", "Symptom for today already exists!");
+                    map.put("code", "0");
                     return new ResponseEntity<>(map, HttpStatus.OK);
                 }
             }
@@ -51,10 +52,13 @@ public class SymptomController {
             userRepo.save(user);
 
             Map<String,String> map = new HashMap<>();
+            map.put("code", "1");
             map.put("message", "Symptom snapshot created successfully!");
+            map.put("payload", user.toString());
             return new ResponseEntity<>(map, HttpStatus.OK);
         } catch (Exception e){
             Map<String,String> map = new HashMap<>();
+            map.put("code", "0");
             map.put("message", e.toString());
             return new ResponseEntity<>(map, HttpStatus.OK);
         }
@@ -65,10 +69,14 @@ public class SymptomController {
         try{
             UserModel user = userRepo.findById(id).get();
             List<SymptomModel> snapshot = symptomRepo.findAllByCreator(user);
-
-            return new ResponseEntity<>(snapshot, HttpStatus.OK);
+            Map<String,String> map = new HashMap<>();
+            map.put("code", "1");
+            map.put("message", "Symptoms snapshot retrieved!");
+            map.put("payload", snapshot.toString());
+            return new ResponseEntity<>(map, HttpStatus.OK);
         } catch (Exception e){
             Map<String,String> map = new HashMap<>();
+            map.put("code", "0");
             map.put("message", e.toString());
             return new ResponseEntity<>(map, HttpStatus.OK);
         }
@@ -79,10 +87,12 @@ public class SymptomController {
         try {
             symptomRepo.deleteAll();
             Map<String, String> map = new HashMap<>();
+            map.put("code", "1");
             map.put("message", "All deleted!");
             return new ResponseEntity<>(map, HttpStatus.OK);
         } catch (Exception e){
             Map<String,String> map = new HashMap<>();
+            map.put("code", "0");
             map.put("message", e.toString());
             return new ResponseEntity<>(map, HttpStatus.OK);
         }

@@ -44,7 +44,7 @@ public class SymptomModel {
 
     @Override
     public String toString() {
-        return "Symptoms{" +
+        return "Symptom Snapshot{" +
                 "id=" + id +
                 ", fever=" + fever +
                 ", cough=" + cough +

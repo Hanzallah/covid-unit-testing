@@ -163,7 +163,7 @@ public class UserController {
     public ResponseEntity<?> getAllUsers() {
         try {
             Map<String,String> map = new HashMap<>();
-            map.put("users", userRepo.findAll().toString());
+            map.put("payload", userRepo.findAll().toString());
             map.put("message", "All users retrieved!");
             map.put("code", "1");
             return new ResponseEntity<>(map, HttpStatus.OK);
