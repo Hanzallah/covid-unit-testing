@@ -88,8 +88,9 @@ public class UserModel {
             symList += ' ';
         }
         return "User{" + "id=" + id + ", name='" + name + '\'' + ", email='" + email + '\'' + ", password='" + password +
-                '\'' + ", age='" + age + '\'' + ", gender='" + gender + '\'' + ", city='" + city +
-                '\'' + ", country='" + country + '\'' +
+                '\'' + ", age='" +  (age != null ? age : "") + '\'' + ", gender='" + (gender != null ? gender : "") +
+                '\'' + ", city='" +  (city != null ? city : "") +
+                '\'' + ", country='" +  (country != null ? country : "") + '\'' +
                 ", loggedIn=" + loggedIn + '}' + ' ' + symList;
     }
 
