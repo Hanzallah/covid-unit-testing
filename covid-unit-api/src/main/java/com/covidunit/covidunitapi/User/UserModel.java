@@ -3,9 +3,7 @@ import com.covidunit.covidunitapi.Symptoms.SymptomModel;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
@@ -95,6 +93,28 @@ public class UserModel {
                 '\'' + ", country='" +  (country != null ? country : "") + '\'' +
                 ", loggedIn=" + loggedIn + '\'' +
                 ", symptoms=" + symList.toString() + '}';
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String,Object> map = new HashMap<>();
+        map.put("id", id);
+        map.put("name", name);
+        map.put("email", email);
+        map.put("password", password);
+        map.put("age", (age != null ? age.toString() : ""));
+        map.put("gender", (gender != null ? gender.toString() : ""));
+        map.put("city", (city != null ? city.toString() : ""));
+        map.put("country", (country != null ? country.toString() : ""));
+        map.put("loggedIn", loggedIn);
+
+        List<Map<String, Object>> symList = new ArrayList<>();
+        for (SymptomModel symModel: symptoms){
+            symList.add(symModel.toMap());
+        }
+
+        map.put("symptoms", symList);
+
+        return map;
     }
 
     public List<SymptomModel> getSymptoms() {

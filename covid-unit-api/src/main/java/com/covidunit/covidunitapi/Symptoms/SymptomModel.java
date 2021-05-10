@@ -1,6 +1,6 @@
 package com.covidunit.covidunitapi.Symptoms;
 import javax.persistence.*;
-import java.util.Objects;
+import java.util.*;
 import java.time.LocalDateTime;
 
 import com.covidunit.covidunitapi.User.UserModel;
@@ -50,7 +50,20 @@ public class SymptomModel {
                 ", cough=" + cough +
                 ", tiredness=" + tiredness +
                 ", difficultyBreathing=" + difficultyBreathing +
+                ", createdAt=" + createdAt.toString() +
                 '}';
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String,Object> map = new HashMap<>();
+        map.put("id", id);
+        map.put("fever", fever);
+        map.put("cough", cough);
+        map.put("tiredness", tiredness);
+        map.put("difficultyBreathing", difficultyBreathing);
+        map.put("createdAt",createdAt.toString());
+
+        return map;
     }
 
     public Integer getFever() {

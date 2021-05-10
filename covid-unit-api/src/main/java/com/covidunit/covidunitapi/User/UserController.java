@@ -1,6 +1,7 @@
 package com.covidunit.covidunitapi.User;
 
 import java.util.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,10 +51,11 @@ public class UserController {
         requestNewUser.setPassword(hashPassword(requestNewUser.getPassword()));
         userRepo.save(requestNewUser);
 
-        Map<String,String> map = new HashMap<>();
+        Map<String,Object> map = new HashMap<>();
         map.put("code", "1");
         map.put("message", "User saved successfully");
-        map.put("payload", requestNewUser.toString());
+        map.put("payload", requestNewUser.toMap());
+
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
@@ -179,8 +181,8 @@ public class UserController {
     public ResponseEntity<?>  getUserID(@RequestBody Map<String, String> requestUserEmail) {
         try {
             UserModel user = userRepo.findByEmail(requestUserEmail.get("email"));
-            Map<String,String> map = new HashMap<>();
-            map.put("id", String.valueOf(user.getId()));
+            Map<String,Object> map = new HashMap<>();
+            map.put("id", user.getId());
             map.put("code", "1");
             map.put("message", "Id retrieved!");
             return new ResponseEntity<>(map, HttpStatus.OK);
