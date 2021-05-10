@@ -51,10 +51,10 @@ public class SymptomController {
             user.addSymptoms(symptomModel);
             userRepo.save(user);
 
-            Map<String,String> map = new HashMap<>();
+            Map<String,Object> map = new HashMap<>();
             map.put("code", "1");
             map.put("message", "Symptom snapshot created successfully!");
-            map.put("payload", user.toString());
+            map.put("payload", user.toMap());
             return new ResponseEntity<>(map, HttpStatus.OK);
         } catch (Exception e){
             Map<String,String> map = new HashMap<>();
@@ -69,10 +69,10 @@ public class SymptomController {
         try{
             UserModel user = userRepo.findById(id).get();
             List<SymptomModel> snapshot = symptomRepo.findAllByCreator(user);
-            Map<String,String> map = new HashMap<>();
+            Map<String,Object> map = new HashMap<>();
             map.put("code", "1");
             map.put("message", "Symptoms snapshot retrieved!");
-            map.put("payload", snapshot.toString());
+            map.put("payload", snapshot);
             return new ResponseEntity<>(map, HttpStatus.OK);
         } catch (Exception e){
             Map<String,String> map = new HashMap<>();

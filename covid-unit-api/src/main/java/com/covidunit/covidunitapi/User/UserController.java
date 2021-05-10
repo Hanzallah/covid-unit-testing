@@ -75,10 +75,10 @@ public class UserController {
                 if (BCrypt.checkpw(requestEmailPass.get("password"), other.getPassword())){
                     other.setLoggedIn(true);
                     userRepo.save(other);
-                    Map<String,String> map = new HashMap<>();
+                    Map<String,Object> map = new HashMap<>();
                     map.put("message", "User logged in successfully!");
                     map.put("code", "1");
-                    map.put("payload", other.toString());
+                    map.put("payload", other.toMap());
                     return new ResponseEntity<>(map, HttpStatus.OK);
                 }
                 else{
@@ -164,8 +164,8 @@ public class UserController {
     @GetMapping("/all")
     public ResponseEntity<?> getAllUsers() {
         try {
-            Map<String,String> map = new HashMap<>();
-            map.put("payload", userRepo.findAll().toString());
+            Map<String,Object> map = new HashMap<>();
+            map.put("payload", userRepo.findAll());
             map.put("message", "All users retrieved!");
             map.put("code", "1");
             return new ResponseEntity<>(map, HttpStatus.OK);
