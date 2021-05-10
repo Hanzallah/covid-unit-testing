@@ -58,8 +58,8 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> userLogin(@RequestBody UserModel requestUser){
-        if (requestUser.getEmail() == null || requestUser.getPassword() == null || requestUser.getName() == null) {
+    public ResponseEntity<?> userLogin(@RequestBody Map<String, String> requestEmailPass){
+        if (requestEmailPass.get("email") == null || requestEmailPass.get("password") == null){
             Map<String, String> map = new HashMap<>();
             map.put("code", "0");
             map.put("message", "Fields cannot be null!");
@@ -69,8 +69,8 @@ public class UserController {
         List<UserModel> users = userRepo.findAll();
 
         for (UserModel other: users){
-            if (other.equals(requestUser)){
-                if (BCrypt.checkpw(requestUser.getPassword(), other.getPassword())){
+            if (other.getEmail().equals(requestEmailPass.get("email"))){
+                if (BCrypt.checkpw(requestEmailPass.get("password"), other.getPassword())){
                     other.setLoggedIn(true);
                     userRepo.save(other);
                     Map<String,String> map = new HashMap<>();
@@ -95,8 +95,8 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logUserOut(@RequestBody UserModel requestUser) {
-        if (requestUser.getEmail() == null || requestUser.getPassword() == null || requestUser.getName() == null){
+    public ResponseEntity<?> logUserOut(@RequestBody Map<String, String> requestEmailPass) {
+        if (requestEmailPass.get("email") == null || requestEmailPass.get("password") == null){
             Map<String,String> map = new HashMap<>();
             map.put("code", "0");
             map.put("message", "Fields cannot be null!");
@@ -106,7 +106,7 @@ public class UserController {
         List<UserModel> users = userRepo.findAll();
 
         for (UserModel other : users) {
-            if (other.equals(requestUser)) {
+            if (other.getEmail().equals(requestEmailPass.get("email"))) {
                 other.setLoggedIn(false);
                 userRepo.save(other);
 
@@ -125,10 +125,10 @@ public class UserController {
 
 
     @PostMapping("/reset/password")
-    public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> requestUserPass) {
+    public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> requestEmailPass) {
         try {
-            UserModel user = userRepo.findByEmail(requestUserPass.get("email"));
-            user.setPassword(hashPassword(requestUserPass.get("password")));
+            UserModel user = userRepo.findByEmail(requestEmailPass.get("email"));
+            user.setPassword(hashPassword(requestEmailPass.get("password")));
             userRepo.save(user);
 
             Map<String,String> map = new HashMap<>();

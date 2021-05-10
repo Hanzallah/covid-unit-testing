@@ -3,6 +3,7 @@ import com.covidunit.covidunitapi.Symptoms.SymptomModel;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class UserModel {
 
     @OneToMany(mappedBy = "creator", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<SymptomModel> symptoms;
+    private List<SymptomModel> symptoms = new ArrayList<SymptomModel>();
 
     public UserModel(){}
     public UserModel(String name, String email, String password) {
@@ -82,16 +83,18 @@ public class UserModel {
 
     @Override
     public String toString() {
-        String symList = "";
+        List<String> symList = new ArrayList<>();
+        String symString = "";
         for (SymptomModel symModel: symptoms){
-            symList += symModel.toString();
-            symList += ' ';
+            symString += symModel.toString();
+            symList.add(symString);
         }
-        return "User{" + "id=" + id + ", name='" + name + '\'' + ", email='" + email + '\'' + ", password='" + password +
-                '\'' + ", age='" +  (age != null ? age : "") + '\'' + ", gender='" + (gender != null ? gender : "") +
+        return "{" + "id=" + id + ", name='" + name + '\'' + ", email='" + email + '\'' + ", password='" + password +
+                '\'' + ", age='" +  (age != null ? age.toString() : "") + '\'' + ", gender='" + (gender != null ? gender : "") +
                 '\'' + ", city='" +  (city != null ? city : "") +
                 '\'' + ", country='" +  (country != null ? country : "") + '\'' +
-                ", loggedIn=" + loggedIn + '}' + ' ' + symList;
+                ", loggedIn=" + loggedIn + '\'' +
+                ", symptoms=" + symList.toString() + '}';
     }
 
     public List<SymptomModel> getSymptoms() {
