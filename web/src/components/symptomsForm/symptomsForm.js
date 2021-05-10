@@ -11,13 +11,8 @@ class SymptomsForm extends Component {
 	}
 
 	componentDidMount() {
-		//fetch data from api
 		this.setState({
-			name: 'Jane Doe',
-			age: 21,
-			country: 'Turkey',
-			city: 'Ankara',
-			email: 'jane.doe@mail.com',
+			user: this.props.user,
 		})
 	}
 
@@ -30,37 +25,46 @@ class SymptomsForm extends Component {
 		})
 	}
 
-	handleUser = () => {
-		if (this.state.login) {
-			//call login service
-		} else {
-			//call sign up service
-		}
-		//if return is successful
-		this.props.onComplete()
-	}
-
 	submit = () => {
-		//send symptoms from state to service
-		this.setState({ enterSymptoms: false })
+		fetch(`http://localhost:8080/api/v1/symptoms/create/${this.state.user?.id}`, {
+			method: "POST",
+			mode: 'cors',
+			headers: {
+				'Content-Type': 'application/json',
+				'Accepts': 'application/json',
+			},
+			body: JSON.stringify({
+				fever: this.state.temp,
+				cough: this.state.cough,
+				tiredness: this.state.tiredness,
+				difficultyBreathing: this.state.breathing
+			})
+		}).then(async response => {
+			let res = await response.json();
+			if (res.code === '1') {
+				console.log('success')
+			}
+		}).catch(err => {
+			console.log(err);
+		})
 	}
 
 	render() {
 		return (
-			<div className="container">
+			<div className="container" >
 				<div className="box"></div>
 				<div className="container-forms">
-					<div className="container-form" style={this.state.showSymptoms ? {width: '530px'} : null}>
+					<div className="container-form" style={this.state.showSymptoms ? { width: '530px' } : null}>
 						<div className="form-item log-in">
 							<div className="table">
 								<div className="table-cell">
 									{!this.state.enterSymptoms && !this.state.showSymptoms &&
 										<div>
-											<input name="name" value={this.state.name} disabled />
-											<input name="age" value={this.state.age} disabled />
-											<input name="country" value={this.state.country} disabled />
-											<input name="city" value={this.state.city} disabled />
-											<input name="email" value={this.state.email} disabled />
+											<input name="name" value={this.state.user?.name} disabled />
+											<input name="age" value={this.state.user?.age} disabled />
+											<input name="country" value={this.state.user?.country} disabled />
+											<input name="city" value={this.state.user?.city} disabled />
+											<input name="email" value={this.state.user?.email} disabled />
 											<div className="btn" style={{ width: 'fit-content' }} onClick={() => this.setState({ enterSymptoms: true })}>
 												Enter Today's Symptoms
 											</div>
@@ -82,7 +86,7 @@ class SymptomsForm extends Component {
 												<option value={false}>No</option>
 											</select>
 											<div className='label'>Fatigue:</div>
-											<select name="fatigue" onClick={(e) => this.handleChange(e)}>
+											<select name="tiredness" onClick={(e) => this.handleChange(e)}>
 												<option value={true}>Yes</option>
 												<option value={false}>No</option>
 											</select>
@@ -101,18 +105,18 @@ class SymptomsForm extends Component {
 									}
 									{this.state.showSymptoms &&
 										<div>
-											<Chart />
+											<Chart userId={this.state.user?.id} />
 											<div className="btn" style={{ width: 'fit-content' }} onClick={() => this.setState({ showSymptoms: false })}>
 												Back
 											</div>
 										</div>
 									}
 								</div>
-							
+
 							</div>
 						</div>
 					</div>
-				
+
 				</div>
 			</div>
 		);

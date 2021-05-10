@@ -20,12 +20,55 @@ class Login extends Component {
 
 	handleUser = () => {
 		if (this.state.login) {
-			//call login service
+			fetch("http://localhost:8080/api/v1/user/login", {
+				method: "POST",
+				mode: 'cors',
+				headers: {
+					'Content-Type': 'application/json',
+					'Accepts': 'application/json',
+				},
+				body: JSON.stringify({
+					name: '',
+					email: this.state.email,
+					password: this.state.password,
+				})
+			}).then(async response => {
+				let res = await response.json();
+				if (res.code === '1') {
+					this.props.onComplete(res.payload);
+				}
+			})
+				.catch(err => {
+					console.log(err);
+				});
 		} else {
-			//call sign up service
+			fetch("http://localhost:8080/api/v1/user/register", {
+				method: "POST",
+				mode: 'cors',
+				headers: {
+					'Content-Type': 'application/json',
+					'Accepts': 'application/json',
+				},
+				body: JSON.stringify({
+					name: this.state.name,
+					age: parseInt(this.state.age),
+					gender: this.state.sex,
+					city: this.state.city,
+					country: this.state.country,
+					email: this.state.email,
+					password: this.state.password,
+				})
+			}).then(async response => {
+				let res = await response.json();
+				console.log(res)
+				if (res.code === '1') {
+					this.props.onComplete(res.payload);
+				}
+			})
+				.catch(err => {
+					console.log(err);
+				});
 		}
-		//if return is successful
-		this.props.onComplete()
 	}
 
 	render() {
@@ -69,8 +112,8 @@ class Login extends Component {
 								<div className="table-cell">
 									{this.state.login ?
 										<div>
-											<input name="Email" placeholder="Email" type="text" onChange={(e) => this.handleChange(e)} />
-											<input name="Password" placeholder="Password" type="Password" onChange={(e) => this.handleChange(e)} />
+											<input name="email" placeholder="Email" type="text" onChange={(e) => this.handleChange(e)} />
+											<input name="password" placeholder="Password" type="Password" onChange={(e) => this.handleChange(e)} />
 											<div className="btn" onClick={() => this.handleUser()}>
 												{this.state.login ? 'Log in' : 'Sign up'}
 											</div>
