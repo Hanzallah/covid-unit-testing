@@ -1,6 +1,6 @@
 # Unit Testing
 
---> The project consists of the covid-unit-api folder<br />
+--> The project consists of the covid-unit-api and web folders<br />
 
 ## Requirements for covid-unit-api:
 --> `cd covid-unit-api` then follow the instructions below<br />
@@ -16,3 +16,9 @@
 --> Execute `CREATE TABLE users;` in the shell<br />
 --> Execute `CREATE TABLE symptoms;` in the shell<br />
 --> Switch back to IntelliJ and run the program which will start on port 8080<br/>
+
+## Requirements for web:
+This project was created with [Create React App](https://github.com/facebook/create-react-app).<br />
+--> In the project directory, you should run `yarn`<br />
+--> Then run `yarn start`<br />
+--> Open http://localhost:3000 to view it in the browser.<br />
