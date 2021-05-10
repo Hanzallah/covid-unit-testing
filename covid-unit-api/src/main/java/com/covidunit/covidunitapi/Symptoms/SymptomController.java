@@ -33,12 +33,13 @@ public class SymptomController {
             List<SymptomModel> allSymptoms = symptomRepo.findAllByCreator(user);
 
             for (SymptomModel curSymptom: allSymptoms){
-                if (curSymptom.didUploadToday()){
-                    Map<String,String> map = new HashMap<>();
-                    map.put("message", "Symptom for today already exists!");
-                    map.put("code", "0");
-                    return new ResponseEntity<>(map, HttpStatus.OK);
-                }
+//                if (curSymptom.didUploadToday()){
+                Map<String,String> map = new HashMap<>();
+                map.put("message", "Symptom for today already exists!");
+                map.put("code", "0");
+                return new ResponseEntity<>(map, HttpStatus.OK);
+//                }
+
             }
 
             int symptomCount = 0;
