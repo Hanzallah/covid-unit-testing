@@ -47,6 +47,7 @@ class SymptomsForm extends Component {
 		}).catch(err => {
 			console.log(err);
 		})
+		this.setState({ enterSymptoms: false })
 	}
 
 	render() {
@@ -54,7 +55,7 @@ class SymptomsForm extends Component {
 			<div className="container" >
 				<div className="box"></div>
 				<div className="container-forms">
-					<div className="container-form" style={this.state.showSymptoms ? { width: '530px' } : null}>
+					<div className="container-form" style={this.state.showSymptoms ? { width: '900px', left: '-130px' } : null}>
 						<div className="form-item log-in">
 							<div className="table">
 								<div className="table-cell">

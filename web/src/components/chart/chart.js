@@ -64,7 +64,7 @@ class Chart extends React.Component {
 		}).then(async response => {
 			let res = await response.json();
 			if (res.code === '1') {
-				let cleanedData = res.payload.slice(-5).map(obj => {
+				let cleanedData = res.payload.slice(-8).map(obj => {
 					let label = moment(obj.createdAt).format('D MMM hh:mm:ss');
 					let value = obj.fever;
 					return { label, value };
