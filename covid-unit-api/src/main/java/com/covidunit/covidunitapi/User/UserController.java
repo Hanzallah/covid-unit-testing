@@ -177,7 +177,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/api/v1/user/id")
+    @GetMapping("/id")
     public ResponseEntity<?>  getUserID(@RequestBody Map<String, String> requestUserEmail) {
         try {
             UserModel user = userRepo.findByEmail(requestUserEmail.get("email"));
