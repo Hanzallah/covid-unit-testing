@@ -83,10 +83,14 @@ public class UserModel {
     public String toString() {
         List<String> symList = new ArrayList<>();
         String symString = "";
-        for (SymptomModel symModel: symptoms){
-            symString += symModel.toString();
-            symList.add(symString);
+        if(symptoms != null)
+        {
+            for (SymptomModel symModel: symptoms){
+                symString += symModel.toString();
+                symList.add(symString);
+            }
         }
+
         return "{" + "id=" + id + ", name='" + name + '\'' + ", email='" + email + '\'' + ", password='" + password +
                 '\'' + ", age='" +  (age != null ? age.toString() : "") + '\'' + ", gender='" + (gender != null ? gender : "") +
                 '\'' + ", city='" +  (city != null ? city : "") +

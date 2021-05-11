@@ -5,6 +5,7 @@ import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.mindrot.jbcrypt.BCrypt;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 @CrossOrigin
 @RequestMapping("/api/v1/user")
 @RestController
+@Transactional
 public class UserController {
     @Autowired
     UserRepo userRepo;
@@ -22,6 +24,7 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody UserModel requestNewUser){
+        System.out.println(userRepo.toString());
         List<UserModel> users = userRepo.findAll();
 
         if (requestNewUser.getEmail() == null || requestNewUser.getPassword() == null || requestNewUser.getName() == null){
@@ -177,7 +180,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/api/v1/user/id")
+    @GetMapping("/id")
     public ResponseEntity<?>  getUserID(@RequestBody Map<String, String> requestUserEmail) {
         try {
             UserModel user = userRepo.findByEmail(requestUserEmail.get("email"));
